@@ -28,6 +28,7 @@
   }
 
   function node(tag, className, children) {
+    if (Array.isArray(className) && children === undefined) { children = className; className = ''; }
     const element = document.createElement(tag);
     if (className) element.className = className;
     (children || []).forEach(child => {
