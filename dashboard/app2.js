@@ -260,7 +260,7 @@
   }
 
   function rowElement(row, live) {
-    const item = node('tr', [
+    const cells = [
       text('td', live ? 'LIVE' : row.rank, 'rank'),
       node('td', 'protocol', [text('b', row.name), text('span', (row.category || 'Other') + ' · ' + ((row.chains || []).slice(0, 3).join(', ') || 'chain n/a'), 'sub')]),
       text('td', formatMoney(row.tvl_usd), 'mono'),
@@ -268,7 +268,8 @@
       text('td', live ? '—' : formatAge(row.age_days), 'mono'),
       text('td', formatMoney(live ? row.mcap_usd : row.implied_value_usd), 'mono value'),
       node('td', '', [text('span', live ? 'market token' : 'no token on record', 'tag ' + (live ? '' : 'pre'))])
-    ]);
+    ];
+    const item = node('tr', cells);
     if (!live) {
       item.tabIndex = 0;
       item.addEventListener('click', () => openDetail(row));
