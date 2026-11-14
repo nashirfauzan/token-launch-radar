@@ -34,9 +34,12 @@
     }
     const element = document.createElement(tag);
     if (className) element.className = className;
-    (children || []).forEach(child => {
-      if (child) element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
-    });
+    function append(child) {
+      if (child == null) return;
+      if (Array.isArray(child)) { child.forEach(append); return; }
+      element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
+    }
+    append(children);
     return element;
   }
 
