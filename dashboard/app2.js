@@ -248,7 +248,7 @@
     const valueBlock = node('section', 'detail-value', [
       text('div', 'MODEL-IMPLIED VALUE', 'label'),
       text('strong', formatMoney(row.implied_value_usd)),
-      metrics.map(([label, value]) => node('div', '', [text('span', label), text('b', value)]))
+      metrics.map(([label, value]) => node('div', '', [text('span', label), text('b', value)])).flat()
     ]);
     const plan = node('ol', '', (row.farm_steps || []).slice(0, 6).map(step => {
       const splitAt = step.indexOf(' Cost: ');
