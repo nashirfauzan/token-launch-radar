@@ -246,7 +246,8 @@
       ['Chain breadth factor', row.breadth_multiplier + '× · ' + (row.chains || []).length + ' chains']
     ];
     const valueBlock = node('section', 'detail-value', [
-      text('div', 'MODEL-IMPLIED VALUE', 'label'), text('strong', formatMoney(row.implied_value_usd)),
+      text('div', 'MODEL-IMPLIED VALUE', 'label'),
+      text('strong', formatMoney(row.implied_value_usd)),
       metrics.map(([label, value]) => node('div', '', [text('span', label), text('b', value)]))
     ]);
     const plan = node('ol', '', (row.farm_steps || []).slice(0, 6).map(step => {
@@ -257,7 +258,10 @@
       ]);
     }));
     return node('aside', 'detail', [
-      title, valueBlock, text('h3', 'Practical farm research plan'), plan,
+      title,
+      valueBlock,
+      text('h3', 'Practical farm research plan'),
+      plan,
       text('div', 'No points or airdrop is verified by this snapshot. Confirm eligibility, risks and contract addresses through official channels before committing funds.', 'notice')
     ]);
   }
