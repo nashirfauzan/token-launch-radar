@@ -10,8 +10,11 @@ if(!existsSync(source)){process.stderr.write(`No snapshot at ${source}\n`);proce
 const out=arg('output',process.env.MAKEFUN_OUTPUT_DIR||'/output');const snapshot=parseSnapshot(readFileSync(source,'utf8'));
 if(!snapshot.as_of||!Array.isArray(snapshot.protocols)||!Array.isArray(snapshot.watchlist)||new Set(snapshot.protocols.map(p=>p.slug)).size!==snapshot.protocols.length)throw Error('Snapshot has missing metadata or duplicate protocol slugs');
 const {rows,live,meta}=build(snapshot);validate(rows,snapshot);mkdirSync(out,{recursive:true});
+if(rows.some(r=>!Number.isSafeInteger(r.implied_value_usd)||r.farm_steps.length!==6))throw Error('Model output failed value or six-step plan checks');
+if(snapshot.watchlist.some(slug=>!rows.some(row=>row.slug===slug)))throw Error('Model output omitted a watchlist protocol');
 writeFileSync(join(out,'board.json'),JSON.stringify({rows,meta},null,2)+'\n');writeFileSync(join(out,'data.js'),dataScript({rows,live,meta}));
 function copyDir(from:string,to:string){if(!existsSync(from))return;mkdirSync(to,{recursive:true});for(const name of readdirSync(from)){const p=join(from,name);if(statSync(p).isFile())copyFileSync(p,join(to,name));}}
 copyDir(join(root,'dashboard'),join(out,'dashboard'));copyDir(join(root,'screenshots'),join(out,'screenshots'));
+for(const asset of ['index.html','app2.js','app2.css'])if(!existsSync(join(out,'dashboard',asset)))throw Error(`Missing dashboard asset: ${asset}`);
 writeFileSync(join(out,'dossier.json'),buildDossier(out,{text_max_bytes:65536,screenshots:{max:4,max_bytes:524288},dashboard:{max_files:400,max_bytes:4194304}}));
 process.stdout.write(`Radar ${meta.model_version}: ${rows.length} pre-token rows (${meta.watchlist_size} watchlist, ${meta.early_size} early), ${live.length} live tokens; ${meta.peer_observation_count} screened token peers across ${meta.peer_categories} comparable groups.\n`);
